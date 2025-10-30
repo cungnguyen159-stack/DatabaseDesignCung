@@ -1,50 +1,0 @@
--- Tables
-CREATE TABLE Movies (    movie_id SERIAL PRIMARY KEY,    title VARCHAR(200) NOT NULL,    director VARCHAR(100) NOT NULL,    release_year INTEGER,    available BOOLEAN DEFAULT TRUE,    genre VARCHAR(50),    rating VARCHAR(5)  ); 
-CREATE TABLE Members (    member_id SERIAL PRIMARY KEY,    name VARCHAR(100) NOT NULL,    email VARCHAR(100) UNIQUE,    phone VARCHAR(15)  );    CREATE TABLE Rentals (    rental_id SERIAL PRIMARY KEY,    movie_id INTEGER REFERENCES Movies(movie_id),    member_id INTEGER REFERENCES Members(member_id),    rental_date DATE NOT NULL,    return_date DATE  ); 
-
--- Insert statements
-INSERT INTO Movies (title, director, release_year, available, genre, rating) 
-VALUES 
-  ('Inception', 'Christopher Nolan', 2010, TRUE, 'Sci-Fi', 'PG-13'), 
-  ('The Dark Knight', 'Christopher Nolan', 2008, TRUE, 'Action', 'PG-13'), 
-  ('La La Land', 'Damien Chazelle', 2016, TRUE, 'Romance', 'PG-13'), 
-  ('Parasite', 'Bong Joon Ho', 2019, FALSE, 'Thriller', 'R'), 
-  ('Spirited Away', 'Hayao Miyazaki', 2001, TRUE, 'Animation', 'PG'); 
-INSERT INTO Members (name, email, phone) 
-VALUES 
-  (' Cung Nguyen ', ' cung.nguyen@gmail.com ', 405-123-4567'), 
-  ('Bruce Wayne', 'bruce.wayne@gmail.com', 405-222-2222'), 
-  ('Clark Kent', 'clark.kent@ gmail.com', '405-111-1111'); 
-INSERT INTO Rentals (movie_id, member_id, rental_date, return_date)  
-VALUES  
-(4, 1, '2025-10-15', '2025-10-20'), 
- (2, 2, '2025-10-25', NULL);  
-
--- JOIN QUERY
-SELECT m.name, b.title, br.rental_date 
-FROM rentals br 
-JOIN members m ON br.member_id = m.member_id 
-JOIN movies b ON br.movie_id = b.movie_id 
-WHERE br.return_date IS NULL; 
-
-
-
---  3 additional sql queries 
-
--- Movies by genre, ordered by release year
-SELECT title, director, release_year
-FROM Movies
-WHERE genre = 'Action'
-ORDER BY release_year DESC;
-
--- Count movies per genre
-SELECT genre, COUNT(*) AS total_movies
-FROM Movies
-GROUP BY genre
-ORDER BY total_movies DESC;
-
--- Find available movies only
-SELECT title, genre, available
-FROM Movies
-WHERE available = TRUE;
-
