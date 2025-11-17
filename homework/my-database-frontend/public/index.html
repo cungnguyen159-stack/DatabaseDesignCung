@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Movies Database</title>
+  <style>
+      body { font-family: Arial; padding: 20px; }
+      .movie { padding: 12px; border: 1px solid #ccc; margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Movies</h1>
+
+  <input id="search" placeholder="Search title/genre..." />
+  <button onclick="loadSearch()">Search</button>
+
+  <div id="list">Loading...</div>
+
+  <script>
+    function loadAll() {
+      fetch('/.netlify/functions/get-items')
+        .then(r => r.json())
+        .then(show)
+    }
+
+    function loadSearch() {
+      const q = document.getElementById('search').value;
+      fetch('/.netlify/functions/search-items?q=' + q)
+        .then(r => r.json())
+        .then(show)
+    }
+
+    function show(data) {
+      document.getElementById('list').innerHTML =
+        data.map(m => `
+          <div class="movie">
+            <b>${m.title}</b> (${m.release_year})<br>
+            Director: ${m.director}<br>
+            Genre: ${m.genre}<br>
+            Rating: ${m.rating}
+          </div>
+        `).join('');
+    }
+
+    loadAll();
+  </script>
+</body>
+</html>
