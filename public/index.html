@@ -1,58 +1,148 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Movies Database</title>
+  <meta charset="UTF-8">
+  <title>Bakery Database Project</title>
   <style>
-      body { font-family: Arial; padding: 20px; }
-      .item { padding: 12px; border: 1px solid #ccc; margin-bottom: 10px; }
+    body {
+      font-family: 'Arial', sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+
+    header {
+      text-align: center;
+      padding: 30px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+
+    .data-section {
+      background: white;
+      padding: 25px;
+      margin-bottom: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .section-header h2 {
+      color: #333;
+      border-bottom: 3px solid #667eea;
+      padding-bottom: 10px;
+    }
+
+    .section-description {
+      color: #666;
+      font-style: italic;
+      margin: 10px 0;
+    }
+
+    .record-count {
+      color: #764ba2;
+      font-weight: bold;
+    }
+
+    /* Style your tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th {
+      background-color: #667eea;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    tr:hover {
+      background-color: #f0f0f0;
+    }
   </style>
 </head>
 <body>
-  <h1>Customers</h1>
-  <div id="customers">Loading...</div>
-  <script>
-  async function loadCustomers() {
-    const res = await fetch('/.netlify/functions/get-customers');
-    const data = await res.json();
-    document.getElementById('customers').innerHTML = data.map(m => `
-      <div class="item">
-        ${JSON.stringify(m)}
-      </div>
-    `).join('');
-  }
-  loadCustomers();
-  </script>
 
-  <h1>Products</h1>
-  <div id="products">Loading...</div>
-  <script>
-  async function loadProducts() {
-    const res = await fetch('/.netlify/functions/get-products');
-    const data = await res.json();
-    document.getElementById('products').innerHTML = data.map(m => `
-      <div class="item">
-        ${JSON.stringify(m)}
-      </div>
-    `).join('');
-  }
-  loadProducts();
-  </script>
+<header>
+  <h1>Bakery Database Project</h1>
+  <p>A comprehensive system for managing bakery customers, products, and orders</p>
+</header>
 
-  <h1>Orders</h1>
-  <div id="orders">Loading...</div>
-  <script>
-  async function loadOrders() {
-    const res = await fetch('/.netlify/functions/get-orders');
-    const data = await res.json();
-    document.getElementById('orders').innerHTML = data.map(m => `
-      <div class="item">
-        ${JSON.stringify(m)}
-      </div>
-    `).join('');
+<main>
+
+  <!-- Customers Section -->
+  <section class="data-section">
+    <div class="section-header">
+      <h2>Customers Table</h2>
+      <p class="section-description">This table contains information about our bakery customers.</p>
+      <p class="record-count">Total Customers: <span id="count-customers">0</span></p>
+    </div>
+    <div id="customers-container"></div>
+  </section>
+
+  <!-- Products Section -->
+  <section class="data-section">
+    <div class="section-header">
+      <h2>Products Table</h2>
+      <p class="section-description">This table contains all bakery products including cakes, pastries, and bread.</p>
+      <p class="record-count">Total Products: <span id="count-products">0</span></p>
+    </div>
+    <div id="products-container"></div>
+  </section>
+
+  <!-- Orders Section -->
+  <section class="data-section">
+    <div class="section-header">
+      <h2>Orders Table</h2>
+      <p class="section-description">This table contains all orders placed by customers, including products and quantities.</p>
+      <p class="record-count">Total Orders: <span id="count-orders">0</span></p>
+    </div>
+    <div id="orders-container"></div>
+  </section>
+
+</main>
+
+<script>
+  function buildTable(data) {
+    if (!data || data.length === 0) return '<p>No records found.</p>';
+    const columns = Object.keys(data[0]);
+    let html = '<table><thead><tr>' + columns.map(c => `<th>${c}</th>`).join('') + '</tr></thead><tbody>';
+    html += data.map(row => '<tr>' + columns.map(c => `<td>${row[c]}</td>`).join('') + '</tr>').join('');
+    html += '</tbody></table>';
+    return html;
   }
-  loadOrders();
-  </script>
+
+  fetch('/.netlify/functions/get-customers')
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('count-customers').textContent = data.length;
+      document.getElementById('customers-container').innerHTML = buildTable(data);
+    });
+
+  fetch('/.netlify/functions/get-products')
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('count-products').textContent = data.length;
+      document.getElementById('products-container').innerHTML = buildTable(data);
+    });
+
+  fetch('/.netlify/functions/get-orders')
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('count-orders').textContent = data.length;
+      document.getElementById('orders-container').innerHTML = buildTable(data);
+    });
+</script>
 
 </body>
 </html>
