@@ -1,32 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>My Database Frontend</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .item { border: 1px solid #ddd; padding: 10px; margin: 10px 0; }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Movies Database</title>
+  <style>
+      body { font-family: Arial; padding: 20px; }
+      .item { padding: 12px; border: 1px solid #ccc; margin-bottom: 10px; }
+  </style>
 </head>
 <body>
-    <h1>My Database Items</h1>
-    <div id="items">Loading...</div>
+  <h1>Customers</h1>
+  <div id="customers">Loading...</div>
+  <script>
+  async function loadCustomers() {
+    const res = await fetch('/.netlify/functions/get-customers');
+    const data = await res.json();
+    document.getElementById('customers').innerHTML = data.map(m => `
+      <div class="item">
+        ${JSON.stringify(m)}
+      </div>
+    `).join('');
+  }
+  loadCustomers();
+  </script>
 
-    <script>
-        // Fetch data from your API
-        fetch('/.netlify/functions/get-items')
-            .then(response => response.json())
-            .then(data => {
-                const container = document.getElementById('items');
-                container.innerHTML = data.map(item =>
-                    `<div class="item">${JSON.stringify(item)}</div>`
-                ).join('');
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                document.getElementById('items').innerHTML =
-                    'Error loading data';
-            });
-    </script>
+  <h1>Products</h1>
+  <div id="products">Loading...</div>
+  <script>
+  async function loadProducts() {
+    const res = await fetch('/.netlify/functions/get-products');
+    const data = await res.json();
+    document.getElementById('products').innerHTML = data.map(m => `
+      <div class="item">
+        ${JSON.stringify(m)}
+      </div>
+    `).join('');
+  }
+  loadProducts();
+  </script>
+
+  <h1>Orders</h1>
+  <div id="orders">Loading...</div>
+  <script>
+  async function loadOrders() {
+    const res = await fetch('/.netlify/functions/get-orders');
+    const data = await res.json();
+    document.getElementById('orders').innerHTML = data.map(m => `
+      <div class="item">
+        ${JSON.stringify(m)}
+      </div>
+    `).join('');
+  }
+  loadOrders();
+  </script>
+
 </body>
 </html>
