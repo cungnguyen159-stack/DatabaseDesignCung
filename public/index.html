@@ -110,6 +110,14 @@
     <div id="orders-container"></div>
   </section>
 
+  <section class="data-section">
+  <div class="section-header">
+    <h2>Orders Table (with Product Info)</h2>
+    <p class="section-description">This table shows orders with detailed product information instead of IDs.</p>
+    <p class="record-count">Total Orders: <span id="count-products-orders">0</span></p>
+  </div>
+  <div id="products-orders-container"></div>
+</section>
 </main>
 
 <script>
@@ -141,6 +149,13 @@
     .then(data => {
       document.getElementById('count-orders').textContent = data.length;
       document.getElementById('orders-container').innerHTML = buildTable(data);
+    });
+
+  fetch('/.netlify/functions/products-with-orders')
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('count-products-orders').textContent = data.length;
+      document.getElementById('products-orders-container').innerHTML = buildTable(data);
     });
 </script>
 
